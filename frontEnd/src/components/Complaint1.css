@@ -1,0 +1,13 @@
+.my-divider {
+    color: #1890ff;
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+  
+  .my-list-item {
+    padding: 10px;
+    background-color: #f5f5f5;
+    margin-bottom: 10px;
+  }
+  

@@ -1,0 +1,56 @@
+body {
+    background-color: #f3f7f2;
+    font-family: Arial, sans-serif;
+    color: #333;
+  }
+  
+  .scheme-detail {
+    margin-top: 24px;
+  }
+  
+ 
+  .list-card {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 16px;
+    margin-bottom: 16px;
+    background-color: #fff;
+    transition: box-shadow 0.3s;
+  }
+  
+  .list-card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  
+  .search-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+    margin-top: 16px; 
+  }
+  
+  .search-bar {
+    margin-right: 16px;
+  }
+  
+
+  .list-card a {
+    margin-right: 8px;
+    color: #1890ff;
+  }
+  
+  .list-card a:hover {
+    text-decoration: underline;
+  }
+.list-card {
+    display: inline-block; 
+    width: 30%; 
+    margin-right: 2%; 
+    box-sizing: border-box; 
+  }
+  
+  .list-card:last-child {
+    margin-right: 0; 
+  }
+  

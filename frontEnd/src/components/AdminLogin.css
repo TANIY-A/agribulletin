@@ -1,0 +1,83 @@
+.admin-login-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #ccc;
+}
+
+.go-back-icon {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+
+.admin-login-form {
+  width: 400px;
+  padding: 20px;
+  background-color: #f7f7f7;
+  border-radius: 3px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.admin-login-form h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #006400;
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #006400;
+  font-family: Arial, sans-serif;
+}
+
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button[type="submit"] {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #006400;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button[type="submit"]:hover {
+  background-color: #3a9e00;
+}
+
+/* Add highlights to the form */
+.admin-login-form:before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  border-radius: 10px;
+  border: 2px solid #006400;
+  z-index: -1;
+}
