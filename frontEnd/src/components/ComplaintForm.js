@@ -10,13 +10,18 @@ const ComplaintForm = () => {
 
   const handleSubmit = async (values) => {
     try {
-      // Send complaint data to the server and save it in the database
-      await axios.post('http://localhost:5000/api/complaints', values); // Adjust the URL if needed
-      // setSuccessMessage('Complaint submitted successfully!');
-      form.resetFields();
+      const response = await axios.post('http://localhost:5000/api/complaints', values);
+      
+      if (response.status === 200) {
+         setSuccessMessage('Complaint submitted successfully!');
+        form.resetFields();
+      } else {
+        message.error('Failed to submit complaint.');
+      }
     } catch (error) {
-      // message.error('Failed to submit complaint.');
+      message.error('Failed to submit complaint.');
     }
+    
   };
 
   return (

@@ -6,13 +6,18 @@ import Complaint1 from './Complaint1';
 
 const AdminDashboard = () => {
   const [messageText, setMessageText] = useState('');
+  const [schemeNameNotification, setSchemeNameNotification] = useState('');
   const [automatedCall, setAutomatedCall] = useState(false);
   const [messageSent, setMessageSent] = useState(false);
   const [notificationUpdate, setNotificationUpdate] = useState(false);
   const [schemePDF, setSchemePDF] = useState(null);
   const [schemeSubmitted, setSchemeSubmitted] = useState(false);
   const [schemeData, setSchemeData] = useState(null);
+  const [schemeName, setSchemeName] = useState('');
+  const [schemeDescription, setSchemeDescription] = useState('');
+  const [schemeCategory, setSchemeCategory] = useState('');
   const [members, setMembers] = useState([]);
+  const [complaints, setComplaints] = useState([]);
   const [viewComplaints, setViewComplaints] = useState(false);
   const [viewMembers, setViewMembers] = useState(false);
   const [addMemberVisible, setAddMemberVisible] = useState(false);
@@ -51,6 +56,9 @@ const AdminDashboard = () => {
 
   const handleClearInput = () => {
     setSchemePDF(null);
+    setSchemeName('');
+    setSchemeDescription('');
+    setSchemeCategory('');
   };
 
   const handleDragOver = (e) => {
@@ -67,7 +75,7 @@ const AdminDashboard = () => {
     setAddMemberVisible(true);
   };
 
-  const handleToggleComplaints = () => {
+  const handleToggleComplaints = async () => {
     setViewComplaints((prevState) => !prevState);
   };
 
@@ -84,7 +92,6 @@ const AdminDashboard = () => {
       address: values.address,
     };
 
-    // Save newMember to the database or perform necessary logic
     setMembers([...members, newMember]);
     message.success('Member added successfully');
     setAddMemberVisible(false);
@@ -94,8 +101,12 @@ const AdminDashboard = () => {
     const updatedMembers = members.filter((member) => member.key !== record.key);
     setMembers(updatedMembers);
     message.success('Member removed successfully');
+  };
 
-    // Perform the necessary database operation to remove the member from the database
+  const handleRemoveComplaint = (complaint) => {
+    const updatedComplaints = complaints.filter((c) => c.id !== complaint.id);
+    setComplaints(updatedComplaints);
+    message.success('Complaint removed successfully');
   };
 
   const columns = [
@@ -139,6 +150,10 @@ const AdminDashboard = () => {
     window.location.href = '/AdminLogin';
   };
 
+  const handleLoadURL = () => {
+    window.open('https://console.twilio.com/us1/develop/phone-numbers/manage/verified', '_blank');
+  };
+
   return (
     <div className="admin-dashboard">
       <h2>Admin Dashboard</h2>
@@ -149,6 +164,12 @@ const AdminDashboard = () => {
           value={messageText}
           onChange={(e) => setMessageText(e.target.value)}
           placeholder="Enter your message"
+        />
+
+        <Input
+          value={schemeNameNotification}
+          onChange={(e) => setSchemeNameNotification(e.target.value)}
+          placeholder="Enter scheme name"
         />
 
         <Checkbox
@@ -191,11 +212,7 @@ const AdminDashboard = () => {
         {schemeSubmitted ? (
           <p>Scheme submitted successfully!</p>
         ) : (
-          <div
-            className="drop-zone"
-            onDragOver={handleDragOver}
-            onDrop={handleDrop}
-          >
+          <div className="drop-zone" onDragOver={handleDragOver} onDrop={handleDrop}>
             {schemeData ? (
               <div>
                 <FilePdfOutlined style={{ fontSize: '64px', marginBottom: '16px' }} />
@@ -211,43 +228,73 @@ const AdminDashboard = () => {
           </div>
         )}
 
-        <Button
-          type="primary"
-          onClick={() => setSchemeSubmitted(true)}
-          className="action-button"
-          disabled={!schemeData}
-        >
-          Submit
-        </Button>
-        <Button type="primary" onClick={handleClearInput} className="action-button">
-          Clear
-        </Button>
+        <Form layout="vertical">
+          <Form.Item label="Scheme Name">
+            <Input value={schemeName} onChange={(e) => setSchemeName(e.target.value)} />
+          </Form.Item>
+
+          <Form.Item label="Description">
+            <Input.TextArea value={schemeDescription} onChange={(e) => setSchemeDescription(e.target.value)} />
+          </Form.Item>
+
+          <Form.Item label="Category">
+            <Input value={schemeCategory} onChange={(e) => setSchemeCategory(e.target.value)} />
+          </Form.Item>
+
+          <Button type="primary" onClick={handleClearInput} className="action-button">
+            Clear Input
+          </Button>
+
+          <Button
+            type="primary"
+            disabled={!schemeData || !schemeName || !schemeDescription || !schemeCategory}
+            onClick={() => setSchemeSubmitted(true)}
+            className="action-button"
+          >
+            Submit Scheme
+          </Button>
+        </Form>
       </div>
 
-      <Divider className="section-divider">More Functionalities</Divider>
-      <div className="more-functionalities">
-        <Button onClick={handleToggleComplaints} className="functionality-button">
-          {viewComplaints ? 'Close Complaints' : 'View Complaints'}
+      <Divider className="section-divider">Manage Members</Divider>
+      <div className="manage-members">
+        <Button type="primary" onClick={handleAddMember} className="action-button">
+          Add Member
         </Button>
-        <Button onClick={handleAddMember} className="functionality-button">
-          Add New Member
-        </Button>
-        <Button onClick={handleViewMembers} className="functionality-button">
+
+        <Button type="primary" onClick={handleViewMembers} className="action-button">
           {viewMembers ? 'Hide Members' : 'View Members'}
         </Button>
+
+        <Button type="primary" onClick={handleLoadURL} className="action-button">
+          Register Phno.
+        </Button>
+
+        {viewMembers && (
+          <Table columns={columns} dataSource={members} pagination={false} className="members-table" />
+        )}
       </div>
 
-      {viewComplaints && <Complaint1 />}
+      <Divider className="section-divider">View Complaints</Divider>
+      <div className="view-complaints">
+        <Button type="primary" onClick={handleToggleComplaints} className="action-button">
+          {viewComplaints ? 'Hide Complaints' : 'View Complaints'}
+        </Button>
 
-      {viewMembers && (
-        <div className="members-table">
-          <Table columns={columns} dataSource={members} />
-        </div>
-      )}
+        {viewComplaints && (
+
+         
+            <Complaint1 />
+        )}
+      </div>
+
+      <Button type="primary" onClick={handleLogout} className="logout-button">
+        Logout
+      </Button>
 
       <Modal
-        title="Add New Member"
         visible={addMemberVisible}
+        title="Add Member"
         onCancel={() => setAddMemberVisible(false)}
         footer={null}
       >
@@ -271,7 +318,10 @@ const AdminDashboard = () => {
           <Form.Item
             label="Email"
             name="email"
-            rules={[{ required: true, message: 'Please enter the email' }]}
+            rules={[
+              { required: true, message: 'Please enter the email' },
+              { type: 'email', message: 'Please enter a valid email' },
+            ]}
           >
             <Input />
           </Form.Item>
@@ -286,16 +336,11 @@ const AdminDashboard = () => {
 
           <Form.Item>
             <Button type="primary" htmlType="submit">
-              Add Member
+              Add
             </Button>
           </Form.Item>
         </Form>
       </Modal>
-
-      <Button className="logout-button" onClick={handleLogout}>
-        Logout
-      </Button>
-      <footer className="footer">AgriBulletIn</footer>
     </div>
   );
 };
