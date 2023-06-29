@@ -1,2 +1,3 @@
-/backend/config.py
-
+/backend/venv
+/venv
+/backend/__pycache__
