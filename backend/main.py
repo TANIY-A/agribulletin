@@ -1,3 +1,4 @@
+from bson import ObjectId
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 # from flask_pymongo import PyMongo
@@ -49,22 +50,8 @@ twilio_client = Client(account_sid, auth_token)
 def generate_token():
     email = request.json.get('email')
     password = request.json.get('password')
-    
-    # print(email)
-    # print(password)
-
-    # print(type(email))
-    # print(type(password))
-
-
     # check if user exists and password is correct
     user_data = db['login'].find_one({'user': email})
-    # print(user_data)
-    # print(user_data['user'] == email)
-    # print(type(user_data['user']))
-    
-
-
     if user_data['user'] == email and user_data['password'] == password:
         access_token = create_access_token(identity=email)
         response = jsonify({'success': True, 'access_token': access_token})
@@ -194,14 +181,39 @@ def add_member():
     return jsonify({'success': True}), 200 
 
 
-# view members
+# # view members
+# @app.route('/api/members', methods=['GET'])
+# def get_members():
+#     members = list(db.users.find({}, {'_id': 0}))  # Retrieve all members from the 'users' collection
+#     return jsonify(members), 200
 @app.route('/api/members', methods=['GET'])
 def get_members():
-    members = list(db.users.find({}, {'_id': 0}))  # Retrieve all members from the 'users' collection
-    return jsonify(members), 200
+    members = db.users.find()
+    member_list = []
+    for member in members:
+        member_data = {
+            'name': member['name'],
+            'phoneNumber': member['phoneNumber'],
+            'email': member['email'],
+            'address': member['address']
+        }
+        member_list.append(member_data)
+    return jsonify(member_list)
 
+@app.route('/api/memberDelete/<member_id>', methods=['DELETE'])
+def delete_member(member_id):
+    members_collection = db.users
+    result = members_collection.delete_one({'_id': ObjectId(member_id)})
+    if result.deleted_count == 1:
+        return jsonify({'message': 'Member deleted successfully'}), 204
+    else:
+        return jsonify({'error': 'Member not found'}), 404
 
-
+# schemes function
+@app.route('/api/schemes', methods=['GET'])
+def get_schemes():
+    schemes = list(scheme_coll.find())
+    return jsonify(schemes),200
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)

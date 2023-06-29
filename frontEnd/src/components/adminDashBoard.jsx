@@ -22,32 +22,59 @@ const AdminDashboard = () => {
   const [viewMembers, setViewMembers] = useState(false);
   const [addMemberVisible, setAddMemberVisible] = useState(false);
 
-  const handleMakeChanges = () => {
+  const handleMakeChanges = async () => {
     if (automatedCall) {
       console.log('Trigger automated call');
-      // Perform automated call functionality
+      try {
+        await axios.post('/api/automated-call');
+        console.log('Automated call triggered');
+      } catch (error) {
+        console.error('Failed to trigger automated call:', error);
+      }
     }
 
     if (messageSent) {
       console.log('Send message:', messageText);
-      // Send the message
+      try {
+        await axios.post('/api/save-notification', { messageText });
+        // Handle the response or perform any other required action
+        console.log('Notification saved and SMS sent successfully');
+      } catch (error) {
+        console.error('Failed to save notification and send SMS:', error);
+      }
     }
 
     if (notificationUpdate) {
       console.log('Update notification');
-      // Perform notification update
-    }
+      try {
+        const response = await axios.get('/api/notifications');
+        const notifications = response.data;
+        // Update the UI with the retrieved notifications
+        console.log('Notifications:', notifications);
+      } catch (error) {
+        console.error('Failed to get notifications:', error);
+      }
 
+    }
     if (schemeSubmitted) {
       console.log('Submit scheme:', schemeData);
-      // Perform the necessary logic to save the scheme into the database
-      // You can use the schemeData file object to upload the file to a server or perform any other required operation
-
-      // Show success message or perform any other required action
-      message.success('Scheme submitted successfully');
-      setSchemeSubmitted(false);
-      setSchemeData(null);
+      try {
+        const formData = new FormData();
+        formData.append('file', schemeData);
+         await axios.post('/api/submit-scheme', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        message.success('Scheme submitted successfully');
+        setSchemeSubmitted(false);
+        setSchemeData(null);
+      } catch (error) {
+        console.error(error);
+        // Handle the error
+      }
     }
+
   };
 
   const handleClearMessage = () => {
@@ -79,9 +106,24 @@ const AdminDashboard = () => {
     setViewComplaints((prevState) => !prevState);
   };
 
-  const handleViewMembers = () => {
-    setViewMembers((prevState) => !prevState);
+  const handleViewMembers = async () => {
+    if (viewMembers) {
+      setViewMembers(false);
+    } else {
+      try {
+        const response = await axios.get('http://localhost:5000/api/members');
+        const membersData = response.data;
+        setMembers(membersData); // Update the members state variable with the fetched data
+        setViewMembers(true); // Show the members table
+      } catch (error) {
+        console.error('Failed to fetch members:', error);
+      }
+    }
   };
+  
+  // const handleViewMembers = () => {
+  //   setViewMembers((prevState) => !prevState);
+  // };
 
   const handleAddMemberSubmit = (values) => {
     const newMember = {
@@ -104,11 +146,18 @@ const AdminDashboard = () => {
     
   };
 
-  const handleRemoveMember = (record) => {
-    const updatedMembers = members.filter((member) => member.key !== record.key);
-    setMembers(updatedMembers);
-    message.success('Member removed successfully');
+  const handleRemoveMember = async (record) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/memberDelete/${record.id}`);
+      const updatedMembers = members.filter((member) => member.key !== record.key);
+      setMembers(updatedMembers);
+      message.success('Member removed successfully');
+    } catch (error) {
+      console.error('Failed to remove member:', error);
+      message.error('Failed to remove member');
+    }
   };
+  
 
   const handleRemoveComplaint = (complaint) => {
     const updatedComplaints = complaints.filter((c) => c.id !== complaint.id);
