@@ -111,7 +111,7 @@ const AdminDashboard = () => {
       setViewMembers(false);
     } else {
       try {
-        const response = await axios.get('http://localhost:5000/api/members');
+        const response = await axios.get('http://localhost:5000/api/memberview');
         const membersData = response.data;
         console.log(membersData)
         setMembers(membersData); // Update the members state variable with the fetched data
@@ -126,7 +126,7 @@ const AdminDashboard = () => {
   //   setViewMembers((prevState) => !prevState);
   // };
 
-  const handleAddMemberSubmit = (values) => {
+  const handleAddMemberSubmit = async (values) => {
     const newMember = {
       name: values.name,
       phoneNumber: values.phoneNumber,

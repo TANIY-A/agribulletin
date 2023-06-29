@@ -34,6 +34,7 @@ db = client[database_name]
 notification_coll = db['notifications']
 scheme_coll = db['schemes']
 complaints_collection = db['complaints']
+user_collection=db['users']
 
 # Twilio account SID and auth token
 account_sid = "AC7d5a5d71ed13a751651041264ed05e08"
@@ -169,7 +170,7 @@ def remove_complaint(complaint_id):
 #Add Members function
 @app.route('/api/add_member', methods=['POST'])
 def add_member():
-    data = request.get_json()
+    data = request.get_json('newMember')
     name = data.get('name')
     phoneNumber = data.get('phoneNumber')
     email = data.get('email')
@@ -181,7 +182,7 @@ def add_member():
         'email': email,
         'address': address
     }
-    db['users'].insert_one(member)
+    user_collection.insert_one(member)
 
     return jsonify({'success': True}), 200 
 
@@ -191,7 +192,7 @@ def add_member():
 # def get_members():
 #     members = list(db.users.find({}, {'_id': 0}))  # Retrieve all members from the 'users' collection
 #     return jsonify(members), 200
-@app.route('/api/members', methods=['GET'])
+@app.route('/api/memberview', methods=['GET'])
 def get_members():
     members = db.users.find()
     member_list = []
@@ -212,9 +213,9 @@ def delete_member(member_id):
     members_collection = db.users
     result = members_collection.delete_one({'_id': ObjectId(member_id)})
     if result.deleted_count == 1:
-        return jsonify({'message': 'Member deleted successfully'}), 204
+            return jsonify({'message': 'Member deleted successfully'}), 204
     else:
-        return jsonify({'error': 'Member not found'}), 404
+            return jsonify({'error': 'Member not found'}), 404
 
 # schemes function
 @app.route('/api/schemes', methods=['GET'])

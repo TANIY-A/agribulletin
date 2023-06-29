@@ -11,6 +11,7 @@ const SchemePage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('');
   const [filterType, setFilterType] = useState('');
+  const [selectedScheme, setSelectedScheme] = useState(null);
 
   useEffect(() => {
     fetchSchemes();
@@ -19,20 +20,30 @@ const SchemePage = () => {
   const fetchSchemes = async () => {
     try {
       const response = await axios.get('http://localhost:5000/api/schemes');
-       // Update the URL
-       console.log(response.data)
+      console.log(response.data);
       setSchemes(response.data);
     } catch (error) {
       console.error('Error fetching schemes:', error);
     }
   };
 
+  const fetchSchemeDetails = async (id) => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/schemes/${id}`);
+      setSelectedScheme(response.data);
+    } catch (error) {
+      console.error('Error fetching scheme details:', error);
+    }
+  };
+
   const handleSchemeSelect = (id) => {
     setSelectedSchemeId(id);
+    fetchSchemeDetails(id);
   };
 
   const handleGoBack = () => {
     setSelectedSchemeId(null);
+    setSelectedScheme(null);
   };
 
   const handleSearchChange = (event) => {
@@ -54,9 +65,8 @@ const SchemePage = () => {
           Title: searchTerm,
           Category: filterCategory,
           Type: filterType,
-          // Details: filterDetail,
         },
-      }); // Replace with your MongoDB API URL and query parameters
+      });
       setSchemes(response.data);
     } catch (error) {
       console.error('Error fetching filtered schemes:', error);
@@ -107,23 +117,18 @@ const SchemePage = () => {
               </div>
             </div>
           </div>
-          {/* {JSON.stringify(schemes)} */}
 
           <List
             itemLayout="vertical"
             size="large"
             dataSource={schemes}
             renderItem={(scheme) => (
-              
               <List.Item
                 key={scheme.id}
                 actions={[
                   <Button onClick={() => handleSchemeSelect(scheme.id)} key={scheme.id}>
                     Details
                   </Button>,
-                  <a href={scheme.pdf} target="_blank" rel="noopener noreferrer" key={`${scheme.id}-pdf`}>
-                    View PDF
-                  </a>,
                 ]}
               >
                 <List.Item.Meta title={scheme.title} />
@@ -132,10 +137,10 @@ const SchemePage = () => {
           />
         </div>
       )}
-      {selectedSchemeId && (
+      {selectedScheme && (
         <div className="scheme-detail">
-          <h2>{selectedSchemeId.title}</h2>
-          <p>{selectedSchemeId.description}</p>
+          <h2>{selectedScheme.title}</h2>
+          <p>{selectedScheme.description}</p>
           <Button onClick={handleGoBack}>Go Back</Button>
         </div>
       )}
@@ -143,4 +148,4 @@ const SchemePage = () => {
   );
 };
 
-export default SchemePage;
+export default SchemePage;

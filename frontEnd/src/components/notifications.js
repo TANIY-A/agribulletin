@@ -70,14 +70,10 @@ export default class Notification extends Component {
           ))}
         </SmartSlider>
 
-          {/* {JSON.stringify(notifications)} */}
         <div className="notification-container">
           {displayedNotifications.map((notification, index) => (
             <Card className="notification-card" key={index}>
               <Meta title={"Notification " + (index + 1) + ": " + notification.scheme_name} description={notification.Description} />
-              <a href={`/pdfs/${index}.pdf`} target="_blank" rel="noopener noreferrer">
-                Details
-              </a>
             </Card>
           ))}
         </div>
