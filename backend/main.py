@@ -219,13 +219,24 @@ def delete_member(member_id):
 # schemes function
 @app.route('/api/schemes', methods=['GET'])
 def get_schemes():
-    schemes = list(scheme_coll.find())
-    print(schemes)
-
+    schemes = db['schemes'].find()
+    scheme_list = []
     for scheme in schemes:
-            scheme['_id'] = str(scheme['_id'])
-    
-    return jsonify(schemes),200
+        scheme_list.append({
+            'id': str(scheme['_id']),
+            'title': scheme['title']
+        })
+    return jsonify(scheme_list)
+
+@app.route('/api/schemes/<id>', methods=['GET'])
+def get_scheme_by_id(id):
+    scheme = db['schemes'].find_one_or_404({'_id': ObjectId(id)})
+    scheme_details = {
+        'id': str(scheme['_id']),
+        'title': scheme['title'],
+        'description': scheme['description']
+    }
+    return jsonify(scheme_details)
 
 if __name__ == '__main__':
     app.run(debug=True)

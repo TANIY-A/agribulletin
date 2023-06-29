@@ -10,12 +10,12 @@ const AdminDashboard = () => {
   const [automatedCall, setAutomatedCall] = useState(false);
   const [messageSent, setMessageSent] = useState(false);
   const [notificationUpdate, setNotificationUpdate] = useState(false);
-  const [schemePDF, setSchemePDF] = useState(null);
   const [schemeSubmitted, setSchemeSubmitted] = useState(false);
   const [schemeData, setSchemeData] = useState(null);
   const [schemeName, setSchemeName] = useState('');
   const [schemeDescription, setSchemeDescription] = useState('');
   const [schemeCategory, setSchemeCategory] = useState('');
+  const [schemeType, setSchemeType] = useState('');
   const [members, setMembers] = useState([]);
   const [complaints, setComplaints] = useState([]);
   const [viewComplaints, setViewComplaints] = useState(false);
@@ -82,20 +82,10 @@ const AdminDashboard = () => {
   };
 
   const handleClearInput = () => {
-    setSchemePDF(null);
     setSchemeName('');
     setSchemeDescription('');
     setSchemeCategory('');
-  };
-
-  const handleDragOver = (e) => {
-    e.preventDefault();
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    const file = e.dataTransfer.files[0];
-    setSchemeData(file);
+    setSchemeType('');
   };
 
   const handleAddMember = () => {
@@ -267,25 +257,6 @@ const AdminDashboard = () => {
 
       <Divider className="section-divider">Update Scheme</Divider>
       <div className="update-scheme">
-        {schemeSubmitted ? (
-          <p>Scheme submitted successfully!</p>
-        ) : (
-          <div className="drop-zone" onDragOver={handleDragOver} onDrop={handleDrop}>
-            {schemeData ? (
-              <div>
-                <FilePdfOutlined style={{ fontSize: '64px', marginBottom: '16px' }} />
-                <p>PDF File:</p>
-                <p>{schemeData.name}</p>
-              </div>
-            ) : (
-              <div>
-                <FilePdfOutlined style={{ fontSize: '64px', marginBottom: '16px' }} />
-                <p>Drag and drop a PDF file here</p>
-              </div>
-            )}
-          </div>
-        )}
-
         <Form layout="vertical">
           <Form.Item label="Scheme Name">
             <Input value={schemeName} onChange={(e) => setSchemeName(e.target.value)} />
@@ -297,6 +268,9 @@ const AdminDashboard = () => {
 
           <Form.Item label="Category">
             <Input value={schemeCategory} onChange={(e) => setSchemeCategory(e.target.value)} />
+          </Form.Item>
+          <Form.Item label="Type">
+            <Input value={schemeType} onChange={(e) => setSchemeType(e.target.value)} />
           </Form.Item>
 
           <Button type="primary" onClick={handleClearInput} className="action-button">

@@ -29,7 +29,7 @@ const SchemePage = () => {
 
   const fetchSchemeDetails = async (id) => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/schemes/${id}`);
+      const response = await axios.get(`http://localhost:5000/api/schemes/<id>/${id}`);
       setSelectedScheme(response.data);
     } catch (error) {
       console.error('Error fetching scheme details:', error);
