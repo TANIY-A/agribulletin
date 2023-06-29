@@ -15,6 +15,7 @@ const ComplaintsPage = () => {
     try {
       const response = await axios.get('http://localhost:5000/api/complaintList');
       setComplaints(response.data);
+      console.log(response.data)
     } catch (error) {
       console.log('Error fetching complaints:', error);
     }
@@ -55,7 +56,7 @@ const ComplaintsPage = () => {
       key: 'action',
       render: (_, complaint) => (
         <Button type="primary" danger onClick={() => handleRemoveComplaint(complaint._id)}>
-          Remove
+          Remove complaint
         </Button>
       ),
     },

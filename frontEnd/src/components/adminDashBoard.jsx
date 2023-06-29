@@ -254,7 +254,7 @@ const AdminDashboard = () => {
 
           <Button
             type="primary"
-            disabled={!schemeData || !schemeName || !schemeDescription || !schemeCategory}
+            // disabled={!schemeData || !schemeName || !schemeDescription || !schemeCategory}
             onClick={() => setSchemeSubmitted(true)}
             className="action-button"
           >
