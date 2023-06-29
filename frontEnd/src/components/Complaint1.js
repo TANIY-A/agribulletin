@@ -23,6 +23,7 @@ const ComplaintsPage = () => {
 
   const handleRemoveComplaint = async (complaintId) => {
     try {
+      setModalOpen(false)
       await axios.delete(`http://localhost:5000/api/complaintList/${complaintId}`);
       fetchComplaints();
     } catch (error) {
@@ -55,7 +56,7 @@ const ComplaintsPage = () => {
       title: 'Action',
       key: 'action',
       render: (_, complaint) => (
-        <Button type="primary" danger onClick={() => handleRemoveComplaint(complaint._id)}>
+        <Button style={{position: "relative", top: "0"}} type="primary" danger onClick={() => handleRemoveComplaint(complaint._id)}>
           Remove complaint
         </Button>
       ),
