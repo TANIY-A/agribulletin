@@ -146,18 +146,19 @@ const AdminDashboard = () => {
     
   };
 
-  const handleRemoveMember = async (record) => {
-    try {
-      await axios.delete(`http://localhost:5000/api/memberDelete/${record.id}`);
-      const updatedMembers = members.filter((member) => member.key !== record.key);
-      setMembers(updatedMembers);
-      message.success('Member removed successfully');
-    } catch (error) {
-      console.error('Failed to remove member:', error);
-      message.error('Failed to remove member');
-    }
-  };
-  
+ const handleRemoveMember = async (record) => {
+  try {
+    await axios.delete(`http://localhost:5000/api/memberDelete/${record.id}`);
+    console.log(record)
+    const updatedMembers = members.filter((member) => member.key !== record.key);
+    setMembers(updatedMembers);
+    message.success('Member removed successfully');
+  } catch (error) {
+    console.error('Failed to remove member:', error);
+    message.error('Failed to remove member');
+  }
+};
+
   
 
   const handleRemoveComplaint = (complaint) => {

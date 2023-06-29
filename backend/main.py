@@ -208,15 +208,14 @@ def get_members():
 
 @app.route('/api/memberDelete/<member_id>', methods=['DELETE'])
 def delete_member(member_id):
-    try:
-        result = db['users'].delete_one({'_id': ObjectId(member_id)})
-        if result.deleted_count == 1:
+    print(member_id)
+    member_collection=db.users
+    result=member_collection.delete_one({'_id':ObjectId(member_id)})
+    if result.deleted_count == 1:
             return jsonify({'message': 'Member deleted successfully'}), 204
-        else:
+    else:
             return jsonify({'error': 'Member not found'}), 404
-    except Exception as e:
-        print(f"Error removing member with id {member_id}: {str(e)}")
-        return jsonify({'error': str(e)}), 500
+
 # schemes function
 @app.route('/api/schemes', methods=['GET'])
 def get_schemes():
