@@ -3,7 +3,7 @@ import { PhoneOutlined, MessageOutlined, NotificationOutlined, FilePdfOutlined, 
 import { Divider, Input, Checkbox, Button, Form, message, Modal, Table } from 'antd';
 import './Admin.css';
 import Complaint1 from './Complaint1';
-
+import axios from 'axios';
 const AdminDashboard = () => {
   const [messageText, setMessageText] = useState('');
   const [schemeNameNotification, setSchemeNameNotification] = useState('');
@@ -85,16 +85,23 @@ const AdminDashboard = () => {
 
   const handleAddMemberSubmit = (values) => {
     const newMember = {
-      key: Date.now(),
       name: values.name,
       phoneNumber: values.phoneNumber,
       email: values.email,
       address: values.address,
     };
+    axios.post('http://localhost:5000/api/add_member', newMember)
+      .then((response) => {
+        console.log(response.data);
+        message.success('Member added successfully');
+        setAddMemberVisible(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        message.error('Failed to add member');
+      });
 
-    setMembers([...members, newMember]);
-    message.success('Member added successfully');
-    setAddMemberVisible(false);
+    
   };
 
   const handleRemoveMember = (record) => {

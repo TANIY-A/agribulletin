@@ -1,22 +1,35 @@
 import React, { useState } from 'react';
-import { Button, Form, Input } from 'antd';
+import { Button, Form, Input, message } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import './AdminLogin.css';
-import AdminDashboard from './adminDashBoard'
+import AdminDashboard from './adminDashBoard';
+import axios from 'axios';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loggedIn, setLoggedIn] = useState(false);
 
-  const handleSubmit = (values) => {
-    // Handle form submission
-    console.log(values);
-    setLoggedIn(true);
+  const handleSubmit = async (values) => {
+    try {
+      const response = await axios.post('http://localhost:5000/api/token', {
+        email: values.email,
+        password: values.password,
+      });
+
+      const { success, access_token } = response.data;
+
+      if (success) {
+        localStorage.setItem('token', access_token);
+        setLoggedIn(true);
+      }
+    } catch (error) {
+      console.log(error);
+      message.error('Invalid email or password');
+    }
   };
 
   if (loggedIn) {
-    // Render the AdminDashboard component if loggedIn is true
     return <AdminDashboard />;
   }
 
@@ -29,10 +42,18 @@ const AdminLogin = () => {
       />
       <Form className="admin-login-form" onFinish={handleSubmit}>
         <h2>Admin Login</h2>
-        <Form.Item label="Email" name="email" rules={[{ required: true, message: 'Please enter your email' }]}>
+        <Form.Item
+          label="Email"
+          name="email"
+          rules={[{ required: true, message: 'Please enter your email' }]}
+        >
           <Input value={email} onChange={(e) => setEmail(e.target.value)} />
         </Form.Item>
-        <Form.Item label="Password" name="password" rules={[{ required: true, message: 'Please enter your password' }]}>
+        <Form.Item
+          label="Password"
+          name="password"
+          rules={[{ required: true, message: 'Please enter your password' }]}
+        >
           <Input.Password value={password} onChange={(e) => setPassword(e.target.value)} />
         </Form.Item>
         <Form.Item>

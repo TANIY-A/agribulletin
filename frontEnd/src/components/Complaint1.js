@@ -54,7 +54,7 @@ const ComplaintsPage = () => {
       title: 'Action',
       key: 'action',
       render: (_, complaint) => (
-        <Button type="primary" danger onClick={() => handleRemoveComplaint(complaint.id)}>
+        <Button type="primary" danger onClick={() => handleRemoveComplaint(complaint._id)}>
           Remove
         </Button>
       ),
@@ -64,9 +64,13 @@ const ComplaintsPage = () => {
   return (
     <div>
       <h3>Complaints</h3>
-      <Table dataSource={complaints} columns={columns} onRow={(record) => ({
-        onClick: () => handleViewDetails(record),
-      })} />
+      <Table
+        dataSource={complaints}
+        columns={columns}
+        onRow={(record) => ({
+          onClick: () => handleViewDetails(record),
+        })}
+      />
 
       <Modal
         title="Complaint Details"
