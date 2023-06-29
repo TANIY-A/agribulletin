@@ -141,7 +141,7 @@ const SchemePage = () => {
       {selectedScheme && (
         <div className="scheme-detail">
           <h2>{selectedScheme.title}</h2>
-          <p>{selectedScheme.description}</p>
+          <p>{selectedScheme.details}</p>
           <Button onClick={handleGoBack}>Go Back</Button>
         </div>
       )}

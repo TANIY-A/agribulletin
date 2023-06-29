@@ -208,7 +208,7 @@ def get_members():
 
 @app.route('/api/memberDelete/<member_id>', methods=['DELETE'])
 def delete_member(member_id):
-    print(member_id)
+    # print(member_id)
     members_collection = db.users
     result = members_collection.delete_one({'_id': ObjectId(member_id)})
     if result.deleted_count == 1:
@@ -247,10 +247,22 @@ def get_schemes():
     scheme_list = []
     for scheme in schemes:
         scheme_list.append({
-            'id': str(scheme['_id']),
+            '_id': str(scheme['_id']),
             'title': scheme['title']
         })
     return jsonify(scheme_list)
+
+
+@app.route('/api/schemes/<id>', methods=['GET'])
+def get_scheme_by_id(id):
+    scheme = db['schemes'].find_one({'_id': ObjectId(id)})
+    print(scheme)
+    scheme_details = {
+        '_id': str(scheme['_id']),
+        'title': scheme['title'],
+        'details': scheme['details']
+    }
+    return jsonify(scheme_details)
 
 if __name__ == '__main__':
     app.run(debug=True)
