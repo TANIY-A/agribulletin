@@ -113,6 +113,7 @@ const AdminDashboard = () => {
       try {
         const response = await axios.get('http://localhost:5000/api/members');
         const membersData = response.data;
+        console.log(membersData)
         setMembers(membersData); // Update the members state variable with the fetched data
         setViewMembers(true); // Show the members table
       } catch (error) {
@@ -148,8 +149,9 @@ const AdminDashboard = () => {
 
   const handleRemoveMember = async (record) => {
     try {
-      await axios.delete(`http://localhost:5000/api/memberDelete/${record.id}`);
+      console.log(record)
       const updatedMembers = members.filter((member) => member.key !== record.key);
+      await axios.delete(`http://localhost:5000/api/memberDelete/${record._id}`);
       setMembers(updatedMembers);
       message.success('Member removed successfully');
     } catch (error) {
