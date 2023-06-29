@@ -198,6 +198,7 @@ def get_members():
     member_list = []
     for member in members:
         member_data = {
+            '_id': str(member['_id']),
             'name': member['name'],
             'phoneNumber': member['phoneNumber'],
             'email': member['email'],
@@ -209,8 +210,8 @@ def get_members():
 @app.route('/api/memberDelete/<member_id>', methods=['DELETE'])
 def delete_member(member_id):
     print(member_id)
-    member_collection=db.users
-    result=member_collection.delete_one({'_id':ObjectId(member_id)})
+    members_collection = db.users
+    result = members_collection.delete_one({'_id': ObjectId(member_id)})
     if result.deleted_count == 1:
             return jsonify({'message': 'Member deleted successfully'}), 204
     else:
