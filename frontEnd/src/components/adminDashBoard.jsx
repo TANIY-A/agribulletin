@@ -111,7 +111,7 @@ const AdminDashboard = () => {
       setViewMembers(false);
     } else {
       try {
-        const response = await axios.get('http://localhost:5000/api/members');
+        const response = await axios.get('http://localhost:5000/api/memberview');
         const membersData = response.data;
         setMembers(membersData); // Update the members state variable with the fetched data
         setViewMembers(true); // Show the members table
@@ -125,7 +125,7 @@ const AdminDashboard = () => {
   //   setViewMembers((prevState) => !prevState);
   // };
 
-  const handleAddMemberSubmit = (values) => {
+  const handleAddMemberSubmit = async (values) => {
     const newMember = {
       name: values.name,
       phoneNumber: values.phoneNumber,
@@ -157,6 +157,7 @@ const AdminDashboard = () => {
       message.error('Failed to remove member');
     }
   };
+  
   
 
   const handleRemoveComplaint = (complaint) => {
