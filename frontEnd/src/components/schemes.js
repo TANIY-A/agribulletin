@@ -18,7 +18,9 @@ const SchemePage = () => {
 
   const fetchSchemes = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/schemes'); // Update the URL
+      const response = await axios.get('http://localhost:5000/api/schemes');
+       // Update the URL
+       console.log(response.data)
       setSchemes(response.data);
     } catch (error) {
       console.error('Error fetching schemes:', error);
@@ -105,11 +107,14 @@ const SchemePage = () => {
               </div>
             </div>
           </div>
+          {/* {JSON.stringify(schemes)} */}
+
           <List
             itemLayout="vertical"
             size="large"
             dataSource={schemes}
             renderItem={(scheme) => (
+              
               <List.Item
                 key={scheme.id}
                 actions={[

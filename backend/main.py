@@ -213,6 +213,11 @@ def delete_member(member_id):
 @app.route('/api/schemes', methods=['GET'])
 def get_schemes():
     schemes = list(scheme_coll.find())
+    print(schemes)
+
+    for scheme in schemes:
+            scheme['_id'] = str(scheme['_id'])
+    
     return jsonify(schemes),200
 
 if __name__ == '__main__':
