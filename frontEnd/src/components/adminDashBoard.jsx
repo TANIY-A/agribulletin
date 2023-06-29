@@ -25,7 +25,7 @@ const AdminDashboard = () => {
     if (automatedCall) {
       console.log('Trigger automated call');
       try {
-        await axios.post('/api/automated-call');
+        await axios.post('http://localhost:5000/api/automated-call');
         console.log('Automated call triggered');
       } catch (error) {
         console.error('Failed to trigger automated call:', error);
@@ -35,7 +35,7 @@ const AdminDashboard = () => {
     if (messageSent) {
       console.log('Send message:', messageText);
       try {
-        await axios.post('/api/save-notification', { messageText, schemeNameNotification });
+        await axios.post('http://localhost:5000/api/save-notification', { messageText, schemeNameNotification });
         // Handle the response or perform any other required action
         console.log('Notification saved and SMS sent successfully');
       } catch (error) {
@@ -46,7 +46,7 @@ const AdminDashboard = () => {
     if (notificationUpdate) {
       console.log('Update notification');
       try {
-        await axios.get('/api/notifications');
+        await axios.get('http://localhost:5000/api/notifications');
         // Update the UI or perform any other required action
         console.log('Notifications updated');
       } catch (error) {
@@ -60,7 +60,7 @@ const AdminDashboard = () => {
         const formData = new FormData();
         formData.append('file', schemeData);
   
-        await axios.post('/api/submit-scheme', formData, {
+        await axios.post('http://localhost:5000/api/submit-scheme', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -77,7 +77,7 @@ const AdminDashboard = () => {
   
     // Call the send_notification endpoint to trigger the NotificationAll function
     try {
-      await axios.post('/api/send-notification');
+      await axios.post('http://localhost:5000/api/send-notification');
       console.log('Automated call and message sent successfully');
     } catch (error) {
       console.error('Failed to send automated call and message:', error);
