@@ -19,14 +19,19 @@ const SchemePage = () => {
 
   const fetchSchemes = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/schemes');
+      const response = await axios.get('http://localhost:5000/api/schemes', {
+        params: {
+          title: searchTerm,
+          category: filterCategory,
+          type: filterType,
+        },
+      });
       console.log(response.data);
       setSchemes(response.data);
     } catch (error) {
       console.error('Error fetching schemes:', error);
     }
   };
-
   const fetchSchemeDetails = async (id) => {
     try {
       const response = await axios.get(`http://localhost:5000/api/schemes/${id}`);
@@ -60,14 +65,7 @@ const SchemePage = () => {
 
   const handleFilterChange = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/schemes', {
-        params: {
-          Title: searchTerm,
-          Category: filterCategory,
-          Type: filterType,
-        },
-      });
-      setSchemes(response.data);
+      await fetchSchemes();
     } catch (error) {
       console.error('Error fetching filtered schemes:', error);
     }
@@ -115,6 +113,9 @@ const SchemePage = () => {
                   <Option value="Equipments">Equipments</Option>
                 </Select>
               </div>
+              <Button onClick={handleFilterChange} style={{ marginLeft: 16 }}>
+                Apply Filter
+              </Button>
             </div>
           </div>
 

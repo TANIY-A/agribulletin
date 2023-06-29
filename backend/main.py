@@ -115,7 +115,6 @@ def get_notifications():
         return jsonify({'error': str(e)}), 500
    
 
-
 @app.route('/api/submit-scheme', methods=['POST'])
 def submit_scheme():
     file = request.files['file']
@@ -217,10 +216,34 @@ def delete_member(member_id):
     else:
             return jsonify({'error': 'Member not found'}), 404
 
-# schemes function
+# schemes  view function
+# @app.route('/api/schemes', methods=['GET'])
+# def get_schemes():
+#     schemes = db['schemes'].find()
+#     scheme_list = []
+#     for scheme in schemes:
+#         scheme_list.append({
+#             'id': str(scheme['_id']),
+#             'title': scheme['title']
+#         })
+#     return jsonify(scheme_list)
+
+# scheme submit
 @app.route('/api/schemes', methods=['GET'])
 def get_schemes():
-    schemes = db['schemes'].find()
+    title = request.args.get('title')
+    category = request.args.get('category')
+    type = request.args.get('type')
+
+    filter_query = {}
+    if title:
+        filter_query['title'] = {'$regex': title, '$options': 'i'}
+    if category:
+        filter_query['category'] = category
+    if type:
+        filter_query['type'] = type
+
+    schemes = db['schemes'].find(filter_query)
     scheme_list = []
     for scheme in schemes:
         scheme_list.append({
@@ -228,6 +251,7 @@ def get_schemes():
             'title': scheme['title']
         })
     return jsonify(scheme_list)
+
 
 @app.route('/api/schemes/<id>', methods=['GET'])
 def get_scheme_by_id(id):
