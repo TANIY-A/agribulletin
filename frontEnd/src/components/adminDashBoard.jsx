@@ -36,7 +36,7 @@ const AdminDashboard = () => {
     if (messageSent) {
       console.log('Send message:', messageText);
       try {
-        await axios.post('/api/save-notification', { messageText });
+        await axios.post('http://127.0.0.1:5000/api/save-notification', { messageText, schemeNameNotification });
         // Handle the response or perform any other required action
         console.log('Notification saved and SMS sent successfully');
       } catch (error) {
@@ -47,7 +47,7 @@ const AdminDashboard = () => {
     if (notificationUpdate) {
       console.log('Update notification');
       try {
-        const response = await axios.get('/api/notifications');
+        const response = await axios.get('http://127.0.0.1:5000/api/notifications');
         const notifications = response.data;
         // Update the UI with the retrieved notifications
         console.log('Notifications:', notifications);

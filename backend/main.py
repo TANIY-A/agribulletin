@@ -68,8 +68,13 @@ def generate_token():
 @app.route('/api/save-notification', methods=['POST'])
 def save_notification():
     message_text = request.json.get('messageText')
+    scheme_name = request.json.get('schemeNameNotification')
+
+    # print(message_text)
+    # print(scheme_name)
+
     # Store the messageText in MongoDB collection
-    # notification_coll.insert_one({'message': message_text})
+    notification_coll.insert_one({'message': message_text, 'scheme_name': scheme_name})
 
     # # Send SMS notification to recipient
     # recipient_number = '+919207828545'  # Replace with recipient's phone number
@@ -80,7 +85,7 @@ def save_notification():
     #     to=recipient_number
     # )
 
-    return jsonify({'message': 'Notification saved and SMS sent successfully' + message_text})
+    return jsonify({'message': 'Notification saved and SMS sent successfully' + message_text + scheme_name})
 
 
 # @app.route('/api/notifications', methods=['GET'])
