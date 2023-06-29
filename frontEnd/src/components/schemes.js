@@ -29,7 +29,7 @@ const SchemePage = () => {
 
   const fetchSchemeDetails = async (id) => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/schemes/<id>/${id}`);
+      const response = await axios.get(`http://localhost:5000/api/schemes/${id}`);
       setSelectedScheme(response.data);
     } catch (error) {
       console.error('Error fetching scheme details:', error);
@@ -124,9 +124,9 @@ const SchemePage = () => {
             dataSource={schemes}
             renderItem={(scheme) => (
               <List.Item
-                key={scheme.id}
+                key={scheme._id}
                 actions={[
-                  <Button onClick={() => handleSchemeSelect(scheme.id)} key={scheme.id}>
+                  <Button onClick={() => handleSchemeSelect(scheme._id)} key={scheme._id}>
                     Details
                   </Button>,
                 ]}
@@ -140,7 +140,7 @@ const SchemePage = () => {
       {selectedScheme && (
         <div className="scheme-detail">
           <h2>{selectedScheme.title}</h2>
-          <p>{selectedScheme.description}</p>
+          <p>{selectedScheme.details}</p>
           <Button onClick={handleGoBack}>Go Back</Button>
         </div>
       )}
