@@ -203,7 +203,11 @@ def delete_member(member_id):
     else:
         return jsonify({'error': 'Member not found'}), 404
 
-
+# schemes function
+@app.route('/api/schemes', methods=['GET'])
+def get_schemes():
+    schemes = list(scheme_coll.find())
+    return jsonify(schemes),200
 
 if __name__ == '__main__':
     app.run(debug=True)
