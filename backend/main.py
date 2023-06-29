@@ -5,12 +5,11 @@ from flask_cors import CORS
 # from pymongo import MongoClient
 from twilio.rest import Client
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required
+from automated_call import NotificationAll
 
 from config import MONGODB_CONNECTION_STRING
-
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
-
 from bson import ObjectId
 
 
@@ -65,45 +64,21 @@ def generate_token():
     
 
 
-
+# Save notification
 @app.route('/api/save-notification', methods=['POST'])
 def save_notification():
     message_text = request.json.get('messageText')
     scheme_name = request.json.get('schemeNameNotification')
 
-    # print(message_text)
-    # print(scheme_name)
-
-    # Store the messageText in MongoDB collection
     notification_coll.insert_one({'message': message_text, 'scheme_name': scheme_name})
-
-    # # Send SMS notification to recipient
-    # recipient_number = '+919207828545'  # Replace with recipient's phone number
-    # message_body = f'New notification: {message_text}'
-    # twilio_client.messages.create(
-    #     body=message_body,
-    #     from_=twilio_number,
-    #     to=recipient_number
-    # )
-
     return jsonify({'message': 'Notification saved and SMS sent successfully' + message_text + scheme_name})
 
-
-# @app.route('/api/notifications', methods=['GET'])
-# def get_notifications():
-#     notifications = list(notification_coll.find())
-#     formatted_notifications = [
-#         {
-#             'id': str(notification['_id']),
-#             'title': notification['title'],
-#             'text': notification['text'],
-#             'date': notification['date']
-#         }
-#         for notification in notifications
-#     ]
-#     return jsonify(formatted_notifications)
-
-# Notification Function
+@app.route('/api/send-notification', methods=['POST'])
+def send_notification():
+    # Call the NotificationAll function
+    NotificationAll()
+    return jsonify({'message': 'Automated call and message sent successfully'})
+# Notification view Function
 @app.route('/api/notifications', methods=['GET'])
 def get_notifications():
     try:
@@ -114,11 +89,12 @@ def get_notifications():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
    
-
+# scheme submit
 @app.route('/api/submit-scheme', methods=['POST'])
 def submit_scheme():
-    file = request.files['file']
-    scheme_coll.insert_one({'file': file.read()})
+    scheme_data = request.json
+    schemes_collection = db['schemes']
+    schemes_collection.insert_one(scheme_data)
     return jsonify({'message': 'Scheme submitted successfully'})
 
 
@@ -160,12 +136,7 @@ def remove_complaint(complaint_id):
     except Exception as e:
         print(f"Error removing complaint with id {complaint_id}: {str(e)}")
         return jsonify({'error': str(e)}), 500
-
-
-
-
-
-
+    
 #Add Members function
 @app.route('/api/add_member', methods=['POST'])
 def add_member():
@@ -186,11 +157,6 @@ def add_member():
     return jsonify({'success': True}), 200 
 
 
-# # view members
-# @app.route('/api/members', methods=['GET'])
-# def get_members():
-#     members = list(db.users.find({}, {'_id': 0}))  # Retrieve all members from the 'users' collection
-#     return jsonify(members), 200
 @app.route('/api/memberview', methods=['GET'])
 def get_members():
     members = db.users.find()
@@ -216,19 +182,6 @@ def delete_member(member_id):
     else:
             return jsonify({'error': 'Member not found'}), 404
 
-# schemes  view function
-# @app.route('/api/schemes', methods=['GET'])
-# def get_schemes():
-#     schemes = db['schemes'].find()
-#     scheme_list = []
-#     for scheme in schemes:
-#         scheme_list.append({
-#             'id': str(scheme['_id']),
-#             'title': scheme['title']
-#         })
-#     return jsonify(scheme_list)
-
-# scheme submit
 @app.route('/api/schemes', methods=['GET'])
 def get_schemes():
     title = request.args.get('title')

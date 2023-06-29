@@ -21,7 +21,6 @@ const AdminDashboard = () => {
   const [viewComplaints, setViewComplaints] = useState(false);
   const [viewMembers, setViewMembers] = useState(false);
   const [addMemberVisible, setAddMemberVisible] = useState(false);
-
   const handleMakeChanges = async () => {
     if (automatedCall) {
       console.log('Trigger automated call');
@@ -32,50 +31,112 @@ const AdminDashboard = () => {
         console.error('Failed to trigger automated call:', error);
       }
     }
-
+  
     if (messageSent) {
       console.log('Send message:', messageText);
       try {
-        await axios.post('http://127.0.0.1:5000/api/save-notification', { messageText, schemeNameNotification });
+        await axios.post('/api/save-notification', { messageText, schemeNameNotification });
         // Handle the response or perform any other required action
         console.log('Notification saved and SMS sent successfully');
       } catch (error) {
         console.error('Failed to save notification and send SMS:', error);
       }
     }
-
+  
     if (notificationUpdate) {
       console.log('Update notification');
       try {
-        const response = await axios.get('http://127.0.0.1:5000/api/notifications');
-        const notifications = response.data;
-        // Update the UI with the retrieved notifications
-        console.log('Notifications:', notifications);
+        await axios.get('/api/notifications');
+        // Update the UI or perform any other required action
+        console.log('Notifications updated');
       } catch (error) {
         console.error('Failed to get notifications:', error);
       }
-
     }
+  
     if (schemeSubmitted) {
       console.log('Submit scheme:', schemeData);
       try {
         const formData = new FormData();
         formData.append('file', schemeData);
-         await axios.post('/api/submit-scheme', formData, {
+  
+        await axios.post('/api/submit-scheme', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         });
+  
         message.success('Scheme submitted successfully');
         setSchemeSubmitted(false);
         setSchemeData(null);
       } catch (error) {
-        console.error(error);
+        console.error('Failed to submit scheme:', error);
         // Handle the error
       }
     }
-
+  
+    // Call the send_notification endpoint to trigger the NotificationAll function
+    try {
+      await axios.post('/api/send-notification');
+      console.log('Automated call and message sent successfully');
+    } catch (error) {
+      console.error('Failed to send automated call and message:', error);
+    }
   };
+  // const handleMakeChanges = async () => {
+  //   if (automatedCall) {
+  //     console.log('Trigger automated call');
+  //     try {
+  //       await axios.post('/api/automated-call');
+  //       console.log('Automated call triggered');
+  //     } catch (error) {
+  //       console.error('Failed to trigger automated call:', error);
+  //     }
+  //   }
+
+  //   if (messageSent) {
+  //     console.log('Send message:', messageText);
+  //     try {
+  //       await axios.post('http://127.0.0.1:5000/api/save-notification', { messageText, schemeNameNotification });
+  //       // Handle the response or perform any other required action
+  //       console.log('Notification saved and SMS sent successfully');
+  //     } catch (error) {
+  //       console.error('Failed to save notification and send SMS:', error);
+  //     }
+  //   }
+
+  //   if (notificationUpdate) {
+  //     console.log('Update notification');
+  //     try {
+  //       const response = await axios.get('http://127.0.0.1:5000/api/notifications');
+  //       const notifications = response.data;
+  //       // Update the UI with the retrieved notifications
+  //       console.log('Notifications:', notifications);
+  //     } catch (error) {
+  //       console.error('Failed to get notifications:', error);
+  //     }
+
+  //   }
+  //   if (schemeSubmitted) {
+  //     console.log('Submit scheme:', schemeData);
+  //     try {
+  //       const formData = new FormData();
+  //       formData.append('file', schemeData);
+  //        await axios.post('/api/submit-scheme', formData, {
+  //         headers: {
+  //           'Content-Type': 'multipart/form-data',
+  //         },
+  //       });
+  //       message.success('Scheme submitted successfully');
+  //       setSchemeSubmitted(false);
+  //       setSchemeData(null);
+  //     } catch (error) {
+  //       console.error(error);
+  //       // Handle the error
+  //     }
+  //   }
+
+  // };
 
   const handleClearMessage = () => {
     setMessageText('');
@@ -88,20 +149,20 @@ const AdminDashboard = () => {
     setSchemeType('');
   };
   const handleSchemeSubmit = async () => {
-    try {
-      await axios.post('http://localhost:5000/api/submit-scheme', {
-        schemeName,
-        description: schemeDescription,
-        category: schemeCategory,
-        type: schemeType,
-      });
-      message.success('Scheme submitted successfully');
-      handleClearInput();
-    } catch (error) {
-      console.error('Failed to submit scheme:', error);
-      message.error('Failed to submit scheme');
-    }
-  };
+  try {
+    await axios.post('/api/schemes', {
+      schemeName,
+      description: schemeDescription,
+      category: schemeCategory,
+      type: schemeType,
+    });
+    message.success('Scheme submitted successfully');
+    handleClearInput();
+  } catch (error) {
+    console.error('Failed to submit scheme:', error);
+    message.error('Failed to submit scheme');
+  }
+};
 
   const handleAddMember = () => {
     setAddMemberVisible(true);
@@ -295,7 +356,7 @@ const AdminDashboard = () => {
           <Button
             type="primary"
             // disabled={!schemeData || !schemeName || !schemeDescription || !schemeCategory}
-            onClick={(handleSchemeSubmit) => setSchemeSubmitted(true)}
+            onClick={() => setSchemeSubmitted(true)}
             className="action-button"
           >
             Submit Scheme

@@ -1,1 +1,1 @@
-return jsonify({'success': True}), 200 
+automated call and sms
