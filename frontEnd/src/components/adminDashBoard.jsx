@@ -87,6 +87,21 @@ const AdminDashboard = () => {
     setSchemeCategory('');
     setSchemeType('');
   };
+  const handleSchemeSubmit = async () => {
+    try {
+      await axios.post('http://localhost:5000/api/submit-scheme', {
+        schemeName,
+        description: schemeDescription,
+        category: schemeCategory,
+        type: schemeType,
+      });
+      message.success('Scheme submitted successfully');
+      handleClearInput();
+    } catch (error) {
+      console.error('Failed to submit scheme:', error);
+      message.error('Failed to submit scheme');
+    }
+  };
 
   const handleAddMember = () => {
     setAddMemberVisible(true);
@@ -280,7 +295,7 @@ const AdminDashboard = () => {
           <Button
             type="primary"
             // disabled={!schemeData || !schemeName || !schemeDescription || !schemeCategory}
-            onClick={() => setSchemeSubmitted(true)}
+            onClick={(handleSchemeSubmit) => setSchemeSubmitted(true)}
             className="action-button"
           >
             Submit Scheme
