@@ -56,8 +56,8 @@ const ComplaintsPage = () => {
       title: 'Action',
       key: 'action',
       render: (_, complaint) => (
-        <Button style={{position: "relative", top: "0"}} type="primary" danger onClick={() => handleRemoveComplaint(complaint._id)}>
-          Remove complaint
+        <Button style={{position: "relative", top: "0"}} type="primary" >
+          View details
         </Button>
       ),
     },
@@ -85,6 +85,9 @@ const ComplaintsPage = () => {
             <h4>Name: {selectedComplaint.name}</h4>
             <p>Email: {selectedComplaint.email}</p>
             <p>Complaint: {selectedComplaint.complaint}</p>
+            <Button type="primary" danger onClick={() => handleRemoveComplaint(selectedComplaint._id)}>
+              Delete Complaint
+            </Button>
           </div>
         )}
       </Modal>
