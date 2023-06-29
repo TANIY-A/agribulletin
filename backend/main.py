@@ -11,6 +11,7 @@ from config import MONGODB_CONNECTION_STRING
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 
+from bson import ObjectId
 
 
 app = Flask(__name__)
@@ -132,14 +133,19 @@ def save_complaint():
 @app.route('/api/complaintList', methods=['GET'])
 def get_complaints():
     try:
-        complaints = list(db['complaints'].find({}))
+        complaints = list(db['complaints'].find())
+
+        for complaint in complaints:
+            complaint['_id'] = str(complaint['_id'])
+
         return jsonify(complaints)
     except Exception as e:
+        print(str(e))
         return jsonify({'error': str(e)}), 500
 @app.route('/api/complaintList/<complaint_id>', methods=['DELETE'])
 def remove_complaint(complaint_id):
     try:
-        result = db['complaints'].delete_one({'id': complaint_id})
+        result = db['complaints'].delete_one({'_id': ObjectId(complaint_id)})
         if result.deleted_count > 0:
             print(f"Complaint with id {complaint_id} removed successfully")
             return jsonify({'success': True, 'message': 'Complaint removed successfully'})
@@ -207,6 +213,11 @@ def delete_member(member_id):
 @app.route('/api/schemes', methods=['GET'])
 def get_schemes():
     schemes = list(scheme_coll.find())
+    print(schemes)
+
+    for scheme in schemes:
+            scheme['_id'] = str(scheme['_id'])
+    
     return jsonify(schemes),200
 
 if __name__ == '__main__':
