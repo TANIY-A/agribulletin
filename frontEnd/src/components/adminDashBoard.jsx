@@ -137,6 +137,7 @@ const AdminDashboard = () => {
 
   const handleClearMessage = () => {
     setMessageText('');
+    setSchemeNameNotification('');
   };
 
   const handleClearInput = () => {
@@ -394,6 +395,7 @@ const AdminDashboard = () => {
       <Button type="primary" onClick={handleLogout} className="logout-button">
         Logout
       </Button>
+      <footer className='footer'>AgriBulletin</footer>
 
       <Modal
         visible={addMemberVisible}
