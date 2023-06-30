@@ -73,7 +73,7 @@ export default class Notification extends Component {
         <div className="notification-container">
           {displayedNotifications.map((notification, index) => (
             <Card className="notification-card" key={index}>
-              <Meta title={"Notification " + (index + 1) + ": " + notification.scheme_name} description={notification.Description} />
+              <Meta title={"Notification " + (index + 1) + ": " + notification.scheme_name} description={notification.message} />
             </Card>
           ))}
         </div>

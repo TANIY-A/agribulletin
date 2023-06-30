@@ -11,19 +11,25 @@ const SchemePage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('');
   const [filterType, setFilterType] = useState('');
-  const [selectedScheme, setSelectedScheme] = useState(null);
+  const [selectedScheme, setSelectedScheme] = useState('');
+
+  let search_term_var = ""
+  let f_category = "ALL"
+  let f_type = "ALL"
+
+
 
   useEffect(() => {
-    fetchSchemes();
+    fetchSchemes('', 'ALL', 'ALL');
   }, []);
 
-  const fetchSchemes = async () => {
+  const fetchSchemes = async (search_term_var, f_category, f_type) => {
     try {
       const response = await axios.get('http://localhost:5000/api/schemes', {
         params: {
-          schemename: searchTerm,
-          category: filterCategory,
-          type: filterType,
+          schemename: search_term_var,
+          category: f_category,
+          type: f_type,
         },
       });
       console.log(response.data);
@@ -36,7 +42,7 @@ const SchemePage = () => {
     try {
       const response = await axios.get(`http://localhost:5000/api/schemes/${id}`);
       console.log(response.data)
-      this.setSelectedScheme(response.data);
+      setSelectedScheme(response.data);
 
     } catch (error) {
       console.error('Error fetching scheme details:', error);
@@ -53,25 +59,35 @@ const SchemePage = () => {
     setSelectedScheme(null);
   };
 
-  const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
+  const handleSearchChange = async (event) => {
+    // console.log("search___" + event.target.value)
+    search_term_var = event.target.value
+    await fetchSchemes(search_term_var, f_category, f_type)
+    // setSearchTerm(event.target.value);
   };
 
-  const handleFilterChangeInternal = (filterType, value) => {
+  const handleFilterChangeInternal = async (filterType, value) => {
+    
+
     if (filterType === 'category') {
       setFilterCategory(value);
+      f_category = value;
+      console.log("FC" + f_category)
     } else if (filterType === 'type') {
       setFilterType(value);
+      f_type = value;
+
     }
+    await fetchSchemes(search_term_var, f_category, f_type)
   };
 
-  const handleFilterChange = async () => {
-    try {
-      await fetchSchemes();
-    } catch (error) {
-      console.error('Error fetching filtered schemes:', error);
-    }
-  };
+  // const handleFilterChange = async () => {
+  //   try {
+  //     await fetchSchemes();
+  //   } catch (error) {
+  //     console.error('Error fetching filtered schemes:', error);
+  //   }
+  // };
 
   return (
     <div>
@@ -81,8 +97,8 @@ const SchemePage = () => {
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <Search
                 placeholder="Search schemes"
-                value={searchTerm}
-                onChange={handleSearchChange}
+                // value={searchTerm}
+                onChange={(e) => handleSearchChange(e)}
                 style={{ marginRight: 16 }}
               />
               <div style={{ display: 'flex', alignItems: 'center', marginRight: 16 }}>
@@ -93,7 +109,7 @@ const SchemePage = () => {
                   onChange={(value) => handleFilterChangeInternal('category', value)}
                   value={filterCategory}
                 >
-                  <Option value="">All</Option>
+                  <Option value="ALL">All</Option>
                   <Option value="ST">ST</Option>
                   <Option value="SC">SC</Option>
                   <Option value="BPL">BPL</Option>
@@ -108,16 +124,16 @@ const SchemePage = () => {
                   onChange={(value) => handleFilterChangeInternal('type', value)}
                   value={filterType}
                 >
-                  <Option value="">All</Option>
+                  <Option value="ALL">All</Option>
                   <Option value="Seed">Seed</Option>
                   <Option value="Sapling">Sapling</Option>
                   <Option value="Fertilizers">Fertilizers</Option>
                   <Option value="Equipments">Equipments</Option>
                 </Select>
               </div>
-              <Button onClick={handleFilterChange} style={{ marginLeft: 16 }}>
+              {/* <Button onClick={handleFilterChange} style={{ marginLeft: 16 }}>
                 Apply Filter
-              </Button>
+              </Button> */}
             </div>
           </div>
 
@@ -134,7 +150,7 @@ const SchemePage = () => {
                   </Button>,
                 ]}
               >
-                <List.Item.Meta title={scheme.title} />
+                <List.Item.Meta title={scheme.schemeName} />
               </List.Item>
             )}
           />
@@ -142,8 +158,8 @@ const SchemePage = () => {
       )}
       {selectedScheme && (
         <div className="scheme-detail">
-          <h2>{selectedScheme.schemename}</h2>
-          <p>{selectedScheme.details}</p>
+          <h2>{selectedScheme.schemeName}</h2>
+          <p>{selectedScheme.description}</p>
           <Button onClick={handleGoBack}>Go Back</Button>
         </div>
       )}

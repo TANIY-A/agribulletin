@@ -193,21 +193,36 @@ def get_schemes():
     # title = request.args.get('schemename')
     category = request.args.get('category')
     type = request.args.get('type')
+    search_term = request.args.get('schemename')
 
     filter_query = {}
     # if title:
     #     filter_query['s'] = {'$regex': title, '$options': 'i'}
     if category:
-        filter_query['category'] = category
+        if category != 'ALL':
+            filter_query['category'] = category
     if type:
-        filter_query['type'] = type
+        if type != 'ALL':
+            filter_query['type'] = type
+
+    if search_term:
+        if search_term != '':
+            filter_query['schemename'] = { "$regex": "^" + search_term }
+
+    print('________FQ' + str(filter_query))
 
     schemes = db['schemes'].find(filter_query)
+
+   
+
     scheme_list = []
     for scheme in schemes:
         scheme_list.append({
             '_id': str(scheme['_id']),
-            'schemeName': scheme['schemename']
+            'schemeName': scheme['schemename'],
+            'type': scheme['type'],
+            'category': scheme['category'],
+
         })
     return jsonify(scheme_list)
 
