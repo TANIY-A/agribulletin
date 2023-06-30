@@ -72,6 +72,7 @@ def save_notification():
 
     notification_coll.insert_one({'message': message_text, 'scheme_name': scheme_name})
     return jsonify({'message': 'Notification saved and SMS sent successfully' + message_text + scheme_name})
+# automated call and sms
 
 @app.route('/api/send-notification', methods=['POST'])
 def send_notification():
@@ -92,10 +93,15 @@ def get_notifications():
 # scheme submit
 @app.route('/api/submit-scheme', methods=['POST'])
 def submit_scheme():
-    scheme_data = request.json
-    schemes_collection = db['schemes']
-    schemes_collection.insert_one(scheme_data)
-    return jsonify({'message': 'Scheme submitted successfully'})
+    scheme_Name = request.json.get('schemename')
+    scheme_Description = request.json.get('description')
+    scheme_Category = request.json.get('category')
+    scheme_Type = request.json.get('type')
+    scheme_coll.insert_one({'schemename': scheme_Name,
+'description': scheme_Description,
+'category': scheme_Category,
+'type': scheme_Type,})
+    return jsonify({'message': 'Scheme submitted successfully'})
 
 
 

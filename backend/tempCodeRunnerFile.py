@@ -1,1 +1,1 @@
-automated call and sms
+    recipient_number = str(users_collection.find_one()['phoneNumber'])
