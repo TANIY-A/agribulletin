@@ -11,7 +11,7 @@ const SchemePage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('');
   const [filterType, setFilterType] = useState('');
-  const [selectedScheme, setSelectedScheme] = useState(null);
+  const [selectedScheme, setSelectedScheme] = useState('');
 
   useEffect(() => {
     fetchSchemes();
@@ -36,7 +36,7 @@ const SchemePage = () => {
     try {
       const response = await axios.get(`http://localhost:5000/api/schemes/${id}`);
       console.log(response.data)
-      this.setSelectedScheme(response.data);
+      setSelectedScheme(response.data);
 
     } catch (error) {
       console.error('Error fetching scheme details:', error);
@@ -134,7 +134,7 @@ const SchemePage = () => {
                   </Button>,
                 ]}
               >
-                <List.Item.Meta title={scheme.title} />
+                <List.Item.Meta title={scheme.schemeName} />
               </List.Item>
             )}
           />
@@ -142,8 +142,8 @@ const SchemePage = () => {
       )}
       {selectedScheme && (
         <div className="scheme-detail">
-          <h2>{selectedScheme.schemename}</h2>
-          <p>{selectedScheme.details}</p>
+          <h2>{selectedScheme.schemeName}</h2>
+          <p>{selectedScheme.description}</p>
           <Button onClick={handleGoBack}>Go Back</Button>
         </div>
       )}
