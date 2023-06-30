@@ -21,7 +21,7 @@ const SchemePage = () => {
     try {
       const response = await axios.get('http://localhost:5000/api/schemes', {
         params: {
-          title: searchTerm,
+          schemename: searchTerm,
           category: filterCategory,
           type: filterType,
         },
@@ -140,7 +140,7 @@ const SchemePage = () => {
       )}
       {selectedScheme && (
         <div className="scheme-detail">
-          <h2>{selectedScheme.title}</h2>
+          <h2>{selectedScheme.schemename}</h2>
           <p>{selectedScheme.details}</p>
           <Button onClick={handleGoBack}>Go Back</Button>
         </div>

@@ -190,13 +190,13 @@ def delete_member(member_id):
 
 @app.route('/api/schemes', methods=['GET'])
 def get_schemes():
-    title = request.args.get('title')
+    # title = request.args.get('schemename')
     category = request.args.get('category')
     type = request.args.get('type')
 
     filter_query = {}
-    if title:
-        filter_query['title'] = {'$regex': title, '$options': 'i'}
+    # if title:
+    #     filter_query['s'] = {'$regex': title, '$options': 'i'}
     if category:
         filter_query['category'] = category
     if type:
@@ -207,7 +207,7 @@ def get_schemes():
     for scheme in schemes:
         scheme_list.append({
             '_id': str(scheme['_id']),
-            'title': scheme['title']
+            'schemeName': scheme['schemename']
         })
     return jsonify(scheme_list)
 
@@ -218,8 +218,8 @@ def get_scheme_by_id(id):
     print(scheme)
     scheme_details = {
         '_id': str(scheme['_id']),
-        'title': scheme['title'],
-        'details': scheme['details']
+        'schemeName': scheme['schemename'],
+        'description': scheme['description']
     }
     return jsonify(scheme_details)
 
