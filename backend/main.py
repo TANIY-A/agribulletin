@@ -207,7 +207,7 @@ def get_schemes():
 
     if search_term:
         if search_term != '':
-            filter_query['schemename'] = { "$regex": "^" + search_term }
+            filter_query['schemename'] = { "$regex": search_term, "$options": "i" }
 
     print('________FQ' + str(filter_query))
 
