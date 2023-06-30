@@ -137,6 +137,7 @@ const AdminDashboard = () => {
 
   const handleClearMessage = () => {
     setMessageText('');
+    setSchemeNameNotification('');
   };
 
   const handleClearInput = () => {
